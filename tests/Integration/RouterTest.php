@@ -80,7 +80,7 @@ final class RouterTest extends TestCase
 
                 return $response;
             }
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
@@ -113,7 +113,7 @@ final class RouterTest extends TestCase
 
                 return $response;
             }
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
@@ -149,7 +149,7 @@ final class RouterTest extends TestCase
 
                 return $response;
             }
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
@@ -181,7 +181,7 @@ final class RouterTest extends TestCase
             function (): void {
                 throw new \RuntimeException('Something went wrong');
             }
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
@@ -217,7 +217,7 @@ final class RouterTest extends TestCase
             function (): void {
                 throw new \RuntimeException('Something went wrong');
             }
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $app = new Application([
             new RouterMiddleware(new Router([$route]), $responseFactory),
@@ -235,7 +235,7 @@ final class RouterTest extends TestCase
     {
         $route = Route::get('/hello/{name}', 'hello', new CallbackRequestHandler(
             function (): void {}
-        ))->pathOptions(['requirements' => ['name' => '[a-z]+']]);
+        ), [], ['requirements' => ['name' => '[a-z]+']]);
 
         $router = new Router([$route]);
 

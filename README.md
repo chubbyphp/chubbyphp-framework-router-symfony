@@ -14,7 +14,7 @@ Symfony Router implementation for [chubbyphp-framework][1].
 ## Requirements
 
  * php: ^7.2
- * [chubbyphp/chubbyphp-framework][1]: ^3.0
+ * [chubbyphp/chubbyphp-framework][1]: ^3.1
  * [symfony/expression-language][2]: ^4.3|^5.0
  * [symfony/routing][3]: ^4.3|^5.0
 
@@ -63,7 +63,7 @@ $app = new Application([
 
                 return $response;
             }
-        ))->pathOptions([SymfonyRouter::PATH_REQUIREMENTS => ['name' => '[a-z]+']])
+        ), [], [SymfonyRouter::PATH_REQUIREMENTS => ['name' => '[a-z]+']])
     ]), $responseFactory),
 ]);
 
