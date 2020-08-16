@@ -2,10 +2,10 @@
 
 [![Build Status](https://api.travis-ci.org/chubbyphp/chubbyphp-framework-router-symfony.png?branch=master)](https://travis-ci.org/chubbyphp/chubbyphp-framework-router-symfony)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-framework-router-symfony/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-framework-router-symfony?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
-[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
-[![Latest Unstable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/unstable)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
+[![Daily Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/daily)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 
 ## Description
 
