@@ -13,6 +13,7 @@ use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\Symfony\Router;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
+use Chubbyphp\Tests\Framework\Router\Symfony\Helper\AssertTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,6 +26,7 @@ use Psr\Http\Message\UriInterface;
  */
 final class RouterTest extends TestCase
 {
+    use AssertTrait;
     use MockByCallsTrait;
 
     const UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
@@ -69,7 +71,7 @@ final class RouterTest extends TestCase
 
         $cacheFile = sys_get_temp_dir().'/symfony-'.uniqid().uniqid().'.php';
 
-        self::assertFileNotExists($cacheFile);
+        self::assertFileDoesNotExist($cacheFile);
 
         $router = new Router([$route1, $route2], $cacheFile);
 

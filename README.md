@@ -2,10 +2,22 @@
 
 [![Build Status](https://api.travis-ci.org/chubbyphp/chubbyphp-framework-router-symfony.png?branch=master)](https://travis-ci.org/chubbyphp/chubbyphp-framework-router-symfony)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-framework-router-symfony/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-framework-router-symfony?branch=master)
+[![Infection MSI](https://badge.stryker-mutator.io/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)](https://travis-ci.org/chubbyphp/chubbyphp-framework-router-symfony)
 [![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
-[![Daily Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/daily)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
+
+[![bugs](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=bugs)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![code_smells](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=code_smells)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![coverage](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=coverage)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![duplicated_lines_density](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![ncloc](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=ncloc)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![sqale_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![alert_status](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=alert_status)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![reliability_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![security_rating](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=security_rating)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![sqale_index](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=sqale_index)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
+[![vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=chubbyphp_chubbyphp-framework-router-symfony&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=chubbyphp_chubbyphp-framework-router-symfony)
 
 ## Description
 
@@ -13,7 +25,7 @@ Symfony Router implementation for [chubbyphp-framework][1].
 
 ## Requirements
 
- * php: ^7.2
+ * php: ^7.2|^8.0
  * [chubbyphp/chubbyphp-framework][1]: ^3.1
  * [symfony/expression-language][2]: ^4.3|^5.0
  * [symfony/routing][3]: ^4.3|^5.0
