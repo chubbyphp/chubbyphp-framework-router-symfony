@@ -26,7 +26,7 @@ Symfony Router implementation for [chubbyphp-framework][1].
 ## Requirements
 
  * php: ^7.2|^8.0
- * [chubbyphp/chubbyphp-framework][1]: ^3.1
+ * [chubbyphp/chubbyphp-framework][1]: ^3.2
  * [symfony/expression-language][2]: ^4.3|^5.0
  * [symfony/routing][3]: ^4.3|^5.0
 
