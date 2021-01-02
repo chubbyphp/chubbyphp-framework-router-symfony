@@ -21,7 +21,6 @@ use Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
 use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
-use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -40,22 +39,13 @@ final class Router implements RouterInterface
     /**
      * @var array<string, RouteInterface>
      */
-    private $routes;
+    private array $routes;
 
-    /**
-     * @var UrlMatcherInterface
-     */
-    private $urlMatcher;
+    private CompiledUrlMatcher $urlMatcher;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
+    private CompiledUrlGenerator $urlGenerator;
 
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
     /**
      * @param array<int, RouteInterface> $routes
