@@ -10,7 +10,8 @@ use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
 use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
 use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
 use Chubbyphp\Framework\Router\RouteInterface;
-use Chubbyphp\Framework\Router\RouterInterface;
+use Chubbyphp\Framework\Router\RouteMatcherInterface;
+use Chubbyphp\Framework\Router\UrlGeneratorInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Exception\InvalidParameterException as SymfonyInvalidParameterException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
@@ -18,14 +19,14 @@ use Symfony\Component\Routing\Exception\MissingMandatoryParametersException as S
 use Symfony\Component\Routing\Exception\ResourceNotFoundException as SymfonyResourceNotFoundException;
 use Symfony\Component\Routing\Generator\CompiledUrlGenerator;
 use Symfony\Component\Routing\Generator\Dumper\CompiledUrlGeneratorDumper;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface as SymfonyUrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;
 use Symfony\Component\Routing\Matcher\Dumper\CompiledUrlMatcherDumper;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
-final class Router implements RouterInterface
+final class Router implements RouteMatcherInterface, UrlGeneratorInterface
 {
     public const PATH_DEFAULTS = 'defaults';
     public const PATH_REQUIREMENTS = 'requirements';
@@ -127,7 +128,7 @@ final class Router implements RouterInterface
             return $this->urlGenerator->generate(
                 $name,
                 array_merge($attributes, $queryParams),
-                null !== $request ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
+                null !== $request ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
             );
         } catch (SymfonyMissingMandatoryParametersException $exception) {
             throw MissingAttributeForPathGenerationException::create($name, $exception->getMessage());
