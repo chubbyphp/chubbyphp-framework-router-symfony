@@ -16,6 +16,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "chubbyphp/chubbyphp-framework": "^3.2",
+        "psr/http-message": "^1.0.1",
         "symfony/expression-language": "^4.3|^5.0",
         "symfony/routing": "^4.3|^5.0"
     },
