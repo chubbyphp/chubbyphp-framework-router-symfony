@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Chubbyphp\Tests\Framework\Router\Symfony\Unit;
 
 use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
-use Chubbyphp\Framework\Router\Exceptions\MissingAttributeForPathGenerationException;
 use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
 use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
-use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
+use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\Symfony\Router;
 use Chubbyphp\Mock\Call;
@@ -533,6 +532,12 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -575,10 +580,9 @@ final class RouterTest extends TestCase
 
     public function testGenerateUriWithMissingAttribute(): void
     {
-        $this->expectException(MissingAttributeForPathGenerationException::class);
+        $this->expectException(RouteGenerationException::class);
         $this->expectExceptionMessage(
-            'Missing attribute "Some mandatory parameters are missing ("id") to generate a URL for route "user"."'
-            .' while path generation for route: "user"'
+            'Route generation for route "user" with path "/user/{id}/{name}" with attributes "{}" failed. Some mandatory parameters are missing ("id") to generate a URL for route "user".'
         );
         $this->expectExceptionCode(3);
 
@@ -607,6 +611,7 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -615,13 +620,11 @@ final class RouterTest extends TestCase
 
     public function testGenerateUriWithNotMatchingAttribute(): void
     {
-        $this->expectException(NotMatchingValueForPathGenerationException::class);
+        $this->expectException(RouteGenerationException::class);
         $this->expectExceptionMessage(
-            'Not matching value "" with pattern "" on attribute "Parameter "id" for route "user" must match "\d+"'
-                .' ("a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791" given) to generate a corresponding URL." while path'
-                .' generation for route: "user"'
+            'Route generation for route "user" with path "/user/{id}/{name}" with attributes "{"id":"a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791"}" failed. Parameter "id" for route "user" must match "\d+" ("a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791" given) to generate a corresponding URL'
         );
-        $this->expectExceptionCode(4);
+        $this->expectExceptionCode(3);
 
         /** @var MockObject|UriInterface $uri */
         $uri = $this->getMockByCalls(UriInterface::class, [
@@ -648,6 +651,7 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -702,6 +706,10 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route], null, '/path/to/directory');
@@ -733,7 +741,6 @@ final class RouterTest extends TestCase
     {
         $this->expectException(MissingRouteByNameException::class);
         $this->expectExceptionMessage('Missing route: "user"');
-        $this->expectExceptionCode(1);
 
         $router = new Router([]);
         $router->generatePath('user', ['id' => 1]);
@@ -751,6 +758,10 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -770,10 +781,9 @@ final class RouterTest extends TestCase
 
     public function testGeneratePathWithMissingAttribute(): void
     {
-        $this->expectException(MissingAttributeForPathGenerationException::class);
+        $this->expectException(RouteGenerationException::class);
         $this->expectExceptionMessage(
-            'Missing attribute "Some mandatory parameters are missing ("id") to generate a URL for route "user"."'
-                .' while path generation for route: "user"'
+            'Route generation for route "user" with path "/user/{id}/{name}" with attributes "{}" failed. Some mandatory parameters are missing ("id") to generate a URL for route "user".'
         );
 
         /** @var MockObject|RouteInterface $route */
@@ -786,6 +796,7 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -804,6 +815,10 @@ final class RouterTest extends TestCase
             Call::create('getName')->with()->willReturn('user'),
             Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
             Call::create('getMethod')->with()->willReturn('GET'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route], null, '/path/to/directory');

@@ -12,10 +12,9 @@ namespace Chubbyphp\Framework\Router {
 
 namespace Chubbyphp\Framework\Router\Symfony {
     use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
-    use Chubbyphp\Framework\Router\Exceptions\MissingAttributeForPathGenerationException;
     use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
     use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
-    use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
+    use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
     use Chubbyphp\Framework\Router\RouteInterface;
     use Chubbyphp\Framework\Router\RouterInterface;
     use Psr\Http\Message\ServerRequestInterface;
@@ -46,7 +45,7 @@ namespace Chubbyphp\Framework\Router\Symfony {
         /**
          * @var array<string, RouteInterface>
          */
-        private array $routes;
+        private array $routesByName;
 
         private CompiledUrlMatcher $urlMatcher;
 
@@ -59,7 +58,7 @@ namespace Chubbyphp\Framework\Router\Symfony {
          */
         public function __construct(array $routes, ?string $cacheFile = null, string $basePath = '')
         {
-            $this->routes = $this->getRoutesByName($routes);
+            $this->routesByName = $this->getRoutesByName($routes);
             $this->basePath = $basePath;
 
             $compiledRoutes = $this->getCompiledRoutes($routes, $cacheFile);
@@ -85,7 +84,7 @@ namespace Chubbyphp\Framework\Router\Symfony {
             }
 
             /** @var RouteInterface $route */
-            $route = $this->routes[$parameters['_route']];
+            $route = $this->routesByName[$parameters['_route']];
 
             unset($parameters['_route']);
 
@@ -102,7 +101,9 @@ namespace Chubbyphp\Framework\Router\Symfony {
             array $attributes = [],
             array $queryParams = []
         ): string {
-            return $this->generate($request, $name, $attributes, $queryParams);
+            $route = $this->getRoute($name);
+
+            return $this->generate($request, $name, $route->getPath(), $attributes, $queryParams);
         }
 
         /**
@@ -111,7 +112,18 @@ namespace Chubbyphp\Framework\Router\Symfony {
          */
         public function generatePath(string $name, array $attributes = [], array $queryParams = []): string
         {
-            return $this->generate(null, $name, $attributes, $queryParams);
+            $route = $this->getRoute($name);
+
+            return $this->generate(null, $name, $route->getPath(), $attributes, $queryParams);
+        }
+
+        private function getRoute(string $name): RouteInterface
+        {
+            if (!isset($this->routesByName[$name])) {
+                throw MissingRouteByNameException::create($name);
+            }
+
+            return $this->routesByName[$name];
         }
 
         /**
@@ -121,10 +133,11 @@ namespace Chubbyphp\Framework\Router\Symfony {
         private function generate(
             ?ServerRequestInterface $request,
             string $name,
+            string $path,
             array $attributes = [],
             array $queryParams = []
         ): string {
-            if (!isset($this->routes[$name])) {
+            if (!isset($this->routesByName[$name])) {
                 throw MissingRouteByNameException::create($name);
             }
 
@@ -137,9 +150,19 @@ namespace Chubbyphp\Framework\Router\Symfony {
                     null !== $request ? UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH
                 );
             } catch (SymfonyMissingMandatoryParametersException $exception) {
-                throw MissingAttributeForPathGenerationException::create($name, $exception->getMessage());
+                throw RouteGenerationException::create(
+                    $name,
+                    $path,
+                    $attributes,
+                    $exception
+                );
             } catch (SymfonyInvalidParameterException $exception) {
-                throw NotMatchingValueForPathGenerationException::create($name, $exception->getMessage(), '', '');
+                throw RouteGenerationException::create(
+                    $name,
+                    $path,
+                    $attributes,
+                    $exception
+                );
             }
         }
 
