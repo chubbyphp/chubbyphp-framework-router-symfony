@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Framework\Router\Symfony;
 
-use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
 use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
-use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
 use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\RouteMatcherInterface;
 use Chubbyphp\Framework\Router\UrlGeneratorInterface;
+use Chubbyphp\HttpException\HttpException;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Exception\InvalidParameterException as SymfonyInvalidParameterException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
@@ -65,13 +64,22 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
         try {
             $parameters = $this->urlMatcher->match($request->getUri()->getPath());
         } catch (SymfonyResourceNotFoundException $exception) {
-            throw NotFoundException::create($request->getRequestTarget());
+            throw HttpException::createNotFound([
+                'detail' => sprintf(
+                    'The page "%s" you are looking for could not be found.'
+                    .' Check the address bar to ensure your URL is spelled correctly.',
+                    $request->getRequestTarget()
+                ),
+            ]);
         } catch (SymfonyMethodNotAllowedException $exception) {
-            throw MethodNotAllowedException::create(
-                $request->getRequestTarget(),
-                $request->getMethod(),
-                $exception->getAllowedMethods()
-            );
+            throw HttpException::createMethodNotAllowed([
+                'detail' => sprintf(
+                    'Method "%s" at path "%s" is not allowed. Must be one of: "%s"',
+                    $request->getMethod(),
+                    $request->getRequestTarget(),
+                    implode('", "', $exception->getAllowedMethods()),
+                ),
+            ]);
         }
 
         /** @var RouteInterface $route */
@@ -128,10 +136,6 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
         array $attributes = [],
         array $queryParams = []
     ): string {
-        if (!isset($this->routesByName[$name])) {
-            throw MissingRouteByNameException::create($name);
-        }
-
         $this->urlGenerator->setContext($this->getRequestContext($request));
 
         try {

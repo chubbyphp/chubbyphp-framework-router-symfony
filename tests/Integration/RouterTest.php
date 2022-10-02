@@ -84,7 +84,7 @@ final class RouterTest extends TestCase
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
-            new RouteMatcherMiddleware(new Router([$route]), $responseFactory),
+            new RouteMatcherMiddleware(new Router([$route])),
         ]);
 
         $request = $serverRequestFactory->createServerRequest(
@@ -117,7 +117,7 @@ final class RouterTest extends TestCase
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
-            new RouteMatcherMiddleware(new Router([$route]), $responseFactory),
+            new RouteMatcherMiddleware(new Router([$route])),
         ]);
 
         $request = $serverRequestFactory->createServerRequest(
@@ -153,7 +153,7 @@ final class RouterTest extends TestCase
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
-            new RouteMatcherMiddleware(new Router([$route]), $responseFactory),
+            new RouteMatcherMiddleware(new Router([$route])),
         ]);
 
         $request = $serverRequestFactory->createServerRequest(
@@ -185,7 +185,7 @@ final class RouterTest extends TestCase
 
         $app = new Application([
             new ExceptionMiddleware($responseFactory, true),
-            new RouteMatcherMiddleware(new Router([$route]), $responseFactory),
+            new RouteMatcherMiddleware(new Router([$route])),
         ]);
 
         $request = $serverRequestFactory->createServerRequest(
@@ -219,8 +219,7 @@ final class RouterTest extends TestCase
             }
         ), [], ['requirements' => ['name' => '[a-z]+']]);
 
-        $app = new Application([
-            new RouteMatcherMiddleware(new Router([$route]), $responseFactory),
+        $app = new Application([new RouteMatcherMiddleware(new Router([$route])),
         ]);
 
         $request = $serverRequestFactory->createServerRequest(
