@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Framework\Router\Symfony\Integration;
 
-use Bitty\Http\ResponseFactory as BittyResponseFactory;
-use Bitty\Http\ServerRequestFactory as BittyServerRequestFactory;
 use Chubbyphp\Framework\Application;
 use Chubbyphp\Framework\Middleware\ExceptionMiddleware;
 use Chubbyphp\Framework\Middleware\RouteMatcherMiddleware;
@@ -35,13 +33,9 @@ use Sunrise\Http\Message\ServerRequestFactory as SunriseServerRequestFactory;
  */
 final class RouterTest extends TestCase
 {
-    public function providePsr7Implementations(): array
+    public static function providePsr7Implementations(): iterable
     {
         return [
-            'bitty' => [
-                'responseFactory' => new BittyResponseFactory(),
-                'serverRequestFactory' => new BittyServerRequestFactory(),
-            ],
             'guzzle' => [
                 'responseFactory' => new GuzzleResponseFactory(),
                 'serverRequestFactory' => new GuzzleServerRequestFactory(),

@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/chubbyphp/chubbyphp-framework-router-symfony/workflows/CI/badge.svg?branch=master)](https://github.com/chubbyphp/chubbyphp-framework-router-symfony/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-framework-router-symfony/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-framework-router-symfony?branch=master)
-[![Infection MSI](https://badge.stryker-mutator.io/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyphp%2Fchubbyphp-framework-router-symfony%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
@@ -26,20 +26,19 @@ Symfony Router implementation for [chubbyphp-framework][1].
 
 ## Requirements
 
- * php: ^8.0
- * [chubbyphp/chubbyphp-framework][1]: ^5.0.3
- * [chubbyphp/chubbyphp-http-exception][2]: ^1.0.1
- * [psr/http-message][3]: ^1.0.1
- * [symfony/expression-language][4]: ^4.4.38|^5.4.5|^6.0
- * [symfony/routing][5]: ^4.4.38|^5.4.5|^6.0
-
+ * php: ^8.1
+ * [chubbyphp/chubbyphp-framework][1]: ^5.1
+ * [chubbyphp/chubbyphp-http-exception][2]: ^1.1
+ * [psr/http-message][3]: ^1.1|^2.0
+ * [symfony/expression-language][4]: ^5.4.31|^6.3.8|^7.0
+ * [symfony/routing][5]: ^5.4.31|^6.3.8|^7.0
 
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-framework-router-symfony][10].
 
 ```bash
-composer require chubbyphp/chubbyphp-framework-router-symfony "^2.0"
+composer require chubbyphp/chubbyphp-framework-router-symfony "^2.1"
 ```
 
 ## Usage

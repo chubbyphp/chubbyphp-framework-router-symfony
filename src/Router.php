@@ -144,7 +144,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
                 array_merge($attributes, $queryParams),
                 null !== $request ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
             );
-        } catch (SymfonyMissingMandatoryParametersException|SymfonyInvalidParameterException $exception) {
+        } catch (SymfonyInvalidParameterException|SymfonyMissingMandatoryParametersException $exception) {
             throw RouteGenerationException::create(
                 $name,
                 $path,
