@@ -3,7 +3,7 @@
 
 [![CI](https://github.com/chubbyphp/chubbyphp-framework-router-symfony/workflows/CI/badge.svg?branch=master)](https://github.com/chubbyphp/chubbyphp-framework-router-symfony/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/chubbyphp/chubbyphp-framework-router-symfony/badge.svg?branch=master)](https://coveralls.io/github/chubbyphp/chubbyphp-framework-router-symfony?branch=master)
-[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyphp%2Fchubbyphp-framework-router-symfony%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)[![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fchubbyphp%2Fchubbyphp-framework-router-symfony%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/chubbyphp/chubbyphp-framework-router-symfony/master)
 [![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
 [![Monthly Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-framework-router-symfony/d/monthly)](https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-symfony)
