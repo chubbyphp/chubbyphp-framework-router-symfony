@@ -65,7 +65,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
             $parameters = $this->urlMatcher->match($request->getUri()->getPath());
         } catch (SymfonyResourceNotFoundException $exception) {
             throw HttpException::createNotFound([
-                'detail' => sprintf(
+                'detail' => \sprintf(
                     'The page "%s" you are looking for could not be found.'
                     .' Check the address bar to ensure your URL is spelled correctly.',
                     $request->getRequestTarget()
@@ -73,7 +73,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
             ]);
         } catch (SymfonyMethodNotAllowedException $exception) {
             throw HttpException::createMethodNotAllowed([
-                'detail' => sprintf(
+                'detail' => \sprintf(
                     'Method "%s" at path "%s" is not allowed. Must be one of: "%s"',
                     $request->getMethod(),
                     $request->getRequestTarget(),
