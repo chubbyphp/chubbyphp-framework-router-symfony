@@ -142,7 +142,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
             return $this->urlGenerator->generate(
                 $name,
                 array_merge($attributes, $queryParams),
-                null !== $request ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
+                $request instanceof ServerRequestInterface ? SymfonyUrlGeneratorInterface::ABSOLUTE_URL : SymfonyUrlGeneratorInterface::ABSOLUTE_PATH
             );
         } catch (SymfonyInvalidParameterException|SymfonyMissingMandatoryParametersException $exception) {
             throw RouteGenerationException::create(
@@ -205,7 +205,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
 
     private function getRequestContext(?ServerRequestInterface $request = null): RequestContext
     {
-        if (null === $request) {
+        if (!$request instanceof ServerRequestInterface) {
             return new RequestContext($this->basePath);
         }
 
