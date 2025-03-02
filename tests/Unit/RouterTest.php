@@ -9,9 +9,9 @@ use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\Symfony\Router;
 use Chubbyphp\HttpException\HttpException;
-use Chubbyphp\Mock\Call;
-use Chubbyphp\Mock\MockByCallsTrait;
-use PHPUnit\Framework\MockObject\MockObject;
+use Chubbyphp\Mock\MockMethod\WithReturn;
+use Chubbyphp\Mock\MockMethod\WithReturnSelf;
+use Chubbyphp\Mock\MockObjectBuilder;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -23,46 +23,46 @@ use Psr\Http\Message\UriInterface;
  */
 final class RouterTest extends TestCase
 {
-    use MockByCallsTrait;
-
     public const UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
 
     public function testMatchFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
         ]);
 
-        /** @var MockObject|RouteInterface $route1 */
-        $route1 = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_create'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_create'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('POST'),
+        /** @var RouteInterface $route1 */
+        $route1 = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_create'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_create'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'POST'),
         ]);
 
-        /** @var MockObject|RouteInterface $route2 */
-        $route2 = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('withAttributes')->with([])->willReturnSelf(),
+        /** @var RouteInterface $route2 */
+        $route2 = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturnSelf('withAttributes', [[]]),
         ]);
 
         $cacheFile = sys_get_temp_dir().'/symfony-'.uniqid().uniqid().'.php';
@@ -80,31 +80,33 @@ final class RouterTest extends TestCase
 
     public function testMatchNotFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn(''),
-            Call::create('getPath')->with()->willReturn('/'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], ''),
+            new WithReturn('getPath', [], '/'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getRequestTarget')->with()->willReturn('/'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getRequestTarget', [], '/'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -127,32 +129,34 @@ final class RouterTest extends TestCase
 
     public function testMatchMethodNotAllowed(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?offset=1&limit=20'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?offset=1&limit=20'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('POST'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('POST'),
-            Call::create('getRequestTarget')->with()->willReturn('/api/pets?offset=1&limit=20'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'POST'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'POST'),
+            new WithReturn('getRequestTarget', [], '/api/pets?offset=1&limit=20'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -175,33 +179,35 @@ final class RouterTest extends TestCase
 
     public function testMatchWithTokensMatch(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets/8b72750c-5306-416c-bba7-5b41f1c44791'),
-            Call::create('getQuery')->with()->willReturn(''),
-            Call::create('getPath')->with()->willReturn('/api/pets/8b72750c-5306-416c-bba7-5b41f1c44791'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets/8b72750c-5306-416c-bba7-5b41f1c44791'),
+            new WithReturn('getQuery', [], ''),
+            new WithReturn('getPath', [], '/api/pets/8b72750c-5306-416c-bba7-5b41f1c44791'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_read'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_read'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => self::UUID_PATTERN],
             ]),
-            Call::create('getName')->with()->willReturn('pet_read'),
-            Call::create('getPath')->with()->willReturn('/api/pets/{id}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('withAttributes')->with(['id' => '8b72750c-5306-416c-bba7-5b41f1c44791'])->willReturnSelf(),
+            new WithReturn('getName', [], 'pet_read'),
+            new WithReturn('getPath', [], '/api/pets/{id}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturnSelf('withAttributes', [['id' => '8b72750c-5306-416c-bba7-5b41f1c44791']]),
         ]);
 
         $router = new Router([$route]);
@@ -211,31 +217,33 @@ final class RouterTest extends TestCase
 
     public function testMatchWithTokensNotMatch(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets/1'),
-            Call::create('getQuery')->with()->willReturn(''),
-            Call::create('getPath')->with()->willReturn('/api/pets/1'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets/1'),
+            new WithReturn('getQuery', [], ''),
+            new WithReturn('getPath', [], '/api/pets/1'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getRequestTarget')->with()->willReturn('/api/pets/1'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getRequestTarget', [], '/api/pets/1'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_read'),
-            Call::create('getPathOptions')->with()->willReturn([Router::PATH_REQUIREMENTS => ['id' => self::UUID_PATTERN]]),
-            Call::create('getName')->with()->willReturn('pet_read'),
-            Call::create('getPath')->with()->willReturn('/api/pets/{id}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_read'),
+            new WithReturn('getPathOptions', [], [Router::PATH_REQUIREMENTS => ['id' => self::UUID_PATTERN]]),
+            new WithReturn('getName', [], 'pet_read'),
+            new WithReturn('getPath', [], '/api/pets/{id}'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -258,33 +266,33 @@ final class RouterTest extends TestCase
 
     public function testHostMatchFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn(''),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], ''),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
-                Router::PATH_HOST => 'localhost',
-            ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('withAttributes')->with([])->willReturnSelf(),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [Router::PATH_HOST => 'localhost']),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturnSelf('withAttributes', [[]]),
         ]);
 
         $router = new Router([$route]);
@@ -294,33 +302,33 @@ final class RouterTest extends TestCase
 
     public function testHostMatchNotFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn(''),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], ''),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getRequestTarget')->with()->willReturn('/api/pets'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getRequestTarget', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
-                Router::PATH_HOST => 'anotherhost',
-            ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [Router::PATH_HOST => 'anotherhost']),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -343,33 +351,33 @@ final class RouterTest extends TestCase
 
     public function testSchemeMatchFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
-                Router::PATH_SCHEMES => ['https'],
-            ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('withAttributes')->with([])->willReturnSelf(),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [Router::PATH_SCHEMES => ['https']]),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturnSelf('withAttributes', [[]]),
         ]);
 
         $router = new Router([$route]);
@@ -379,33 +387,33 @@ final class RouterTest extends TestCase
 
     public function testSchemeMatchNotFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getRequestTarget')->with()->willReturn('/api/pets?key=value'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getRequestTarget', [], '/api/pets?key=value'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
-                Router::PATH_SCHEMES => ['http'],
-            ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [Router::PATH_SCHEMES => ['http']]),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -428,33 +436,35 @@ final class RouterTest extends TestCase
 
     public function testConditionMatchFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_CONDITION => "context.getQueryString() matches '/key=/'",
             ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('withAttributes')->with([])->willReturnSelf(),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturnSelf('withAttributes', [[]]),
         ]);
 
         $router = new Router([$route]);
@@ -464,33 +474,33 @@ final class RouterTest extends TestCase
 
     public function testConditionMatchNotFound(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('localhost'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'localhost'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getPath', [], '/api/pets'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getRequestTarget')->with()->willReturn('/api/pets?key=value'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getRequestTarget', [], '/api/pets?key=value'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([
-                Router::PATH_CONDITION => "context.getQueryString() matches '/key1=/'",
-            ]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], [Router::PATH_CONDITION => "context.getQueryString() matches '/key1=/'"]),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
         $router = new Router([$route]);
@@ -513,72 +523,74 @@ final class RouterTest extends TestCase
 
     public function testGenerateUri(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('http'),
-            Call::create('getPort')->with()->willReturn(80),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('http'),
-            Call::create('getPort')->with()->willReturn(10080),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('http'),
-            Call::create('getPort')->with()->willReturn(null),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(10443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(null),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'http'),
+            new WithReturn('getPort', [], 80),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'http'),
+            new WithReturn('getPort', [], 10080),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'http'),
+            new WithReturn('getPort', [], null),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 10443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], null),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -627,32 +639,34 @@ final class RouterTest extends TestCase
         );
         $this->expectExceptionCode(3);
 
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -667,32 +681,34 @@ final class RouterTest extends TestCase
         );
         $this->expectExceptionCode(3);
 
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -701,56 +717,58 @@ final class RouterTest extends TestCase
 
     public function testGenerateUriWithBasePath(): void
     {
-        /** @var MockObject|UriInterface $uri */
-        $uri = $this->getMockByCalls(UriInterface::class, [
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
-            Call::create('getScheme')->with()->willReturn('https'),
-            Call::create('getPort')->with()->willReturn(443),
-            Call::create('getHost')->with()->willReturn('user:password@localhost'),
-            Call::create('getPath')->with()->willReturn('/'),
-            Call::create('getQuery')->with()->willReturn('?key=value'),
+        $builder = new MockObjectBuilder();
+
+        /** @var UriInterface $uri */
+        $uri = $builder->create(UriInterface::class, [
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
+            new WithReturn('getScheme', [], 'https'),
+            new WithReturn('getPort', [], 443),
+            new WithReturn('getHost', [], 'user:password@localhost'),
+            new WithReturn('getPath', [], '/'),
+            new WithReturn('getQuery', [], '?key=value'),
         ]);
 
-        /** @var MockObject|ServerRequestInterface $request */
-        $request = $this->getMockByCalls(ServerRequestInterface::class, [
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getUri')->with()->willReturn($uri),
-            Call::create('getMethod')->with()->willReturn('GET'),
+        /** @var ServerRequestInterface $request */
+        $request = $builder->create(ServerRequestInterface::class, [
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getUri', [], $uri),
+            new WithReturn('getMethod', [], 'GET'),
         ]);
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route], null, '/path/to/directory');
@@ -789,20 +807,22 @@ final class RouterTest extends TestCase
 
     public function testGeneratePath(): void
     {
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        $builder = new MockObjectBuilder();
+
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -827,17 +847,19 @@ final class RouterTest extends TestCase
             'Route generation for route "user" with path "/user/{id}/{name}" with attributes "{}" failed. Some mandatory parameters are missing ("id") to generate a URL for route "user".'
         );
 
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        $builder = new MockObjectBuilder();
+
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route]);
@@ -846,20 +868,22 @@ final class RouterTest extends TestCase
 
     public function testGeneratePathWithBasePath(): void
     {
-        /** @var MockObject|RouteInterface $route */
-        $route = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPathOptions')->with()->willReturn([
+        $builder = new MockObjectBuilder();
+
+        /** @var RouteInterface $route */
+        $route = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPathOptions', [], [
                 Router::PATH_REQUIREMENTS => ['id' => '\d+', 'name' => '[a-z]+'],
                 Router::PATH_DEFAULTS => ['name' => null],
             ]),
-            Call::create('getName')->with()->willReturn('user'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
-            Call::create('getPath')->with()->willReturn('/user/{id}/{name}'),
+            new WithReturn('getName', [], 'user'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
+            new WithReturn('getPath', [], '/user/{id}/{name}'),
         ]);
 
         $router = new Router([$route], null, '/path/to/directory');
@@ -885,24 +909,26 @@ final class RouterTest extends TestCase
 
     public function testUseCache(): void
     {
-        /** @var MockObject|RouteInterface $route1 */
-        $route1 = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_create'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_create'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('POST'),
-            Call::create('getName')->with()->willReturn('pet_create'),
+        $builder = new MockObjectBuilder();
+
+        /** @var RouteInterface $route1 */
+        $route1 = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_create'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_create'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'POST'),
+            new WithReturn('getName', [], 'pet_create'),
         ]);
 
-        /** @var MockObject|RouteInterface $route2 */
-        $route2 = $this->getMockByCalls(RouteInterface::class, [
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPathOptions')->with()->willReturn([]),
-            Call::create('getName')->with()->willReturn('pet_list'),
-            Call::create('getPath')->with()->willReturn('/api/pets'),
-            Call::create('getMethod')->with()->willReturn('GET'),
-            Call::create('getName')->with()->willReturn('pet_list'),
+        /** @var RouteInterface $route2 */
+        $route2 = $builder->create(RouteInterface::class, [
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPathOptions', [], []),
+            new WithReturn('getName', [], 'pet_list'),
+            new WithReturn('getPath', [], '/api/pets'),
+            new WithReturn('getMethod', [], 'GET'),
+            new WithReturn('getName', [], 'pet_list'),
         ]);
 
         $cacheFile = sys_get_temp_dir().'/symfony-'.uniqid().uniqid().'.php';
