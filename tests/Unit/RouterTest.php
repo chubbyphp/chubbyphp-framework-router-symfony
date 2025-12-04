@@ -23,7 +23,7 @@ use Psr\Http\Message\UriInterface;
  */
 final class RouterTest extends TestCase
 {
-    public const UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
+    public const string UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
 
     public function testMatchFound(): void
     {

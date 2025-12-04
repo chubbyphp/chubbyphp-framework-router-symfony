@@ -26,14 +26,14 @@ use Symfony\Component\Routing\RouteCollection;
 
 final class Router implements RouteMatcherInterface, UrlGeneratorInterface
 {
-    public const PATH_DEFAULTS = 'defaults';
-    public const PATH_REQUIREMENTS = 'requirements';
-    public const PATH_HOST = 'host';
-    public const PATH_SCHEMES = 'schemes';
-    public const PATH_CONDITION = 'condition';
+    public const string PATH_DEFAULTS = 'defaults';
+    public const string PATH_REQUIREMENTS = 'requirements';
+    public const string PATH_HOST = 'host';
+    public const string PATH_SCHEMES = 'schemes';
+    public const string PATH_CONDITION = 'condition';
 
-    private const MATCHER = 'matcher';
-    private const GENERATOR = 'generator';
+    private const string MATCHER = 'matcher';
+    private const string GENERATOR = 'generator';
 
     /**
      * @var array<string, RouteInterface>
@@ -63,7 +63,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
 
         try {
             $parameters = $this->urlMatcher->match($request->getUri()->getPath());
-        } catch (SymfonyResourceNotFoundException $exception) {
+        } catch (SymfonyResourceNotFoundException) {
             throw HttpException::createNotFound([
                 'detail' => \sprintf(
                     'The page "%s" you are looking for could not be found.'
