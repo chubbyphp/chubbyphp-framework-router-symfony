@@ -30,8 +30,8 @@ Symfony Router implementation for [chubbyphp-framework][1].
  * [chubbyphp/chubbyphp-framework][1]: ^5.2
  * [chubbyphp/chubbyphp-http-exception][2]: ^1.2
  * [psr/http-message][3]: ^1.1|^2.0
- * [symfony/expression-language][4]: ^5.4.45|^6.4.24|^7.4
- * [symfony/routing][5]: ^5.4.48|^6.4.28|^7.4
+ * [symfony/expression-language][4]: ^6.4.30|^7.4|^8.0
+ * [symfony/routing][5]: ^6.4.30|^7.4|^8.0.1
 
 ## Installation
 
