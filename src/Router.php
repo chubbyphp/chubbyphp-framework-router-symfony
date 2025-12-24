@@ -38,16 +38,16 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     /**
      * @var array<string, RouteInterface>
      */
-    private array $routesByName;
+    private readonly array $routesByName;
 
-    private CompiledUrlMatcher $urlMatcher;
+    private readonly CompiledUrlMatcher $urlMatcher;
 
-    private CompiledUrlGenerator $urlGenerator;
+    private readonly CompiledUrlGenerator $urlGenerator;
 
     /**
      * @param array<int, RouteInterface> $routes
      */
-    public function __construct(array $routes, ?string $cacheFile = null, private string $basePath = '')
+    public function __construct(array $routes, ?string $cacheFile = null, private readonly string $basePath = '')
     {
         $this->routesByName = $this->getRoutesByName($routes);
 
