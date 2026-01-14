@@ -158,7 +158,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     /**
      * @param array<int, RouteInterface> $routes
      *
-     * @return array<mixed>
+     * @return array{matcher: array<mixed>, generator: array<mixed>}
      */
     private function getCompiledRoutes(array $routes, ?string $cacheFile): array
     {
@@ -189,15 +189,31 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
 
         foreach ($routes as $route) {
             $pathOptions = $route->getPathOptions();
+
+            /** @var array<string, mixed> $defaults */
+            $defaults = $pathOptions[self::PATH_DEFAULTS] ?? [];
+
+            /** @var array<string|\Stringable> $requirements */
+            $requirements = $pathOptions[self::PATH_REQUIREMENTS] ?? [];
+
+            /** @var null|string $host */
+            $host = $pathOptions[self::PATH_HOST] ?? null;
+
+            /** @var array<string>|string $schemes */
+            $schemes = $pathOptions[self::PATH_SCHEMES] ?? [];
+
+            /** @var null|string $condition */
+            $condition = $pathOptions[self::PATH_CONDITION] ?? null;
+
             $routeCollection->add($route->getName(), new Route(
                 $route->getPath(),
-                $pathOptions[self::PATH_DEFAULTS] ?? [],
-                $pathOptions[self::PATH_REQUIREMENTS] ?? [],
+                $defaults,
+                $requirements,
                 [],
-                $pathOptions[self::PATH_HOST] ?? null,
-                $pathOptions[self::PATH_SCHEMES] ?? [],
+                $host,
+                $schemes,
                 [$route->getMethod()],
-                $pathOptions[self::PATH_CONDITION] ?? null
+                $condition
             ));
         }
 
