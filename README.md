@@ -27,18 +27,18 @@ Symfony Router implementation for [chubbyphp-framework][1].
 ## Requirements
 
  * php: ^8.3
- * [chubbyphp/chubbyphp-framework][1]: ^5.2
- * [chubbyphp/chubbyphp-http-exception][2]: ^1.2
+ * [chubbyphp/chubbyphp-framework][1]: ^6.0.2
+ * [chubbyphp/chubbyphp-http-exception][2]: ^1.3.2
  * [psr/http-message][3]: ^1.1|^2.0
  * [symfony/expression-language][4]: ^6.4.30|^7.4|^8.0
- * [symfony/routing][5]: ^6.4.30|^7.4|^8.0.1
+ * [symfony/routing][5]: ^6.4.30|^7.4.3|^8.0.3
 
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-framework-router-symfony][10].
 
 ```bash
-composer require chubbyphp/chubbyphp-framework-router-symfony "^2.3"
+composer require chubbyphp/chubbyphp-framework-router-symfony "^2.3.3"
 ```
 
 ## Usage
