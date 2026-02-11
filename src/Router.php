@@ -45,7 +45,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     private readonly CompiledUrlGenerator $urlGenerator;
 
     /**
-     * @param array<int, RouteInterface> $routes
+     * @param list<RouteInterface> $routes
      */
     public function __construct(array $routes, ?string $cacheFile = null, private readonly string $basePath = '')
     {
@@ -156,7 +156,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     }
 
     /**
-     * @param array<int, RouteInterface> $routes
+     * @param list<RouteInterface> $routes
      *
      * @return array{matcher: array<mixed>, generator: array<mixed>}
      */
@@ -181,7 +181,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     }
 
     /**
-     * @param array<int, RouteInterface> $routes
+     * @param list<RouteInterface> $routes
      */
     private function getRouteCollection(array $routes): RouteCollection
     {
@@ -244,7 +244,7 @@ final class Router implements RouteMatcherInterface, UrlGeneratorInterface
     }
 
     /**
-     * @param array<int, RouteInterface> $routes
+     * @param list<RouteInterface> $routes
      *
      * @return array<string, RouteInterface>
      */
